@@ -5,17 +5,35 @@ const path = require('path');
 
 const app = express();
 const dbPath = path.join(__dirname, '../listings.db');
-const db = new sqlite3.Database(dbPath);
+const db = new sqlite3.Database(path.join(__dirname, '../listings.db'), (err) => {
+  if (err) {
+    console.error('❌ Failed to connect to DB:', err.message);
+  } else {
+    console.log('✅ Connected to SQLite DB');
+  }
+});
 
-// ✅ Create 'seen' table if it doesn't exist
-db.run(`
-  CREATE TABLE IF NOT EXISTS seen (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    title TEXT,
-    url TEXT,
-    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
-  )
-`);
+// Ensure both tables exist
+db.serialize(() => {
+  db.run(`
+    CREATE TABLE IF NOT EXISTS seen (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      title TEXT,
+      url TEXT,
+      timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+
+  db.run(`
+    CREATE TABLE IF NOT EXISTS listings (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      title TEXT,
+      url TEXT,
+      timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+});
+
 
 app.use(cors({
   origin: 'https://analyzerrrrr-frontend.onrender.com'
