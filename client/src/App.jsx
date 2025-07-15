@@ -30,69 +30,83 @@ function App() {
   };
 
   return (
-    <div style={{ padding: 20, fontFamily: 'Arial' }}>
-      <h1>📊 KEEKOS ANALYZER</h1>
-      <input
-        type="text"
-        value={query}
-        onChange={e => setQuery(e.target.value)}
-        placeholder="e.g. honda civic"
-        style={{ padding: '8px', fontSize: '16px', width: '300px', marginRight: '10px' }}
-      />
-      <button onClick={search} style={{ padding: '8px 16px', fontSize: '16px' }}>Search</button>
+  <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: '#1e1e1e', color: '#fff' }}>
+    
+    {/* Main content column */}
+    <div style={{ flex: 1, padding: 20, maxWidth: '900px', margin: '0 auto' }}>
+      <div style={{ textAlign: 'center' }}>
+        <h1>📊 KEEKOS ANALYZER</h1>
+        <input
+          type="text"
+          value={query}
+          onChange={e => setQuery(e.target.value)}
+          placeholder="e.g. honda civic"
+          style={{ padding: '8px', fontSize: '16px', width: '300px', marginRight: '10px' }}
+        />
+        <button onClick={search} style={{ padding: '8px 16px', fontSize: '16px' }}>Search</button>
+      </div>
 
+      {/* Listing Results */}
       <div style={{ marginTop: '30px' }}>
-        {loading && <p>🔄 Searching...</p>}
-        {error && <p style={{ color: 'red' }}>{error}</p>}
-
         {results.length > 0 && (
           <>
             <h2>{results.length} results found</h2>
             <ul style={{ listStyle: 'none', padding: 0 }}>
               {results.map((r, i) => (
-  <motion.li
-    key={i}
-    initial={{ opacity: 0, y: 10 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.4, delay: i * 0.05 }}
-    style={{
-      display: 'flex',
-      marginBottom: '20px',
-      borderBottom: '1px solid #ccc',
-      paddingBottom: '10px'
-    }}
-  >
-    {r.thumb && (
-      <img
-        src={r.thumb}
-        alt="thumb"
-        style={{ width: 120, height: 90, objectFit: 'cover', marginRight: 15 }}
-      />
-    )}
-    <div style={{ lineHeight: 1.6 }}>
-      <div><strong>Title:</strong> {r.title}</div>
-      <div><strong>Price:</strong> ${r.price.toLocaleString()}</div>
-      <div><strong>Kilometers:</strong> {r.kms.toLocaleString()} km</div>
-      <div><strong>Date Listed:</strong> {new Date(r.timestamp * 1000).toLocaleString()}</div>
-      <div><strong>Location:</strong> {r.location}</div>
-    </div>
-  </motion.li>
-))}
+                <li
+                  key={i}
+                  style={{
+                    display: 'flex',
+                    marginBottom: '20px',
+                    borderBottom: '1px solid #ccc',
+                    paddingBottom: '10px'
+                  }}
+                >
+                  {r.thumb && (
+                    <img
+                      src={r.thumb}
+                      alt="thumb"
+                      style={{ width: 120, height: 90, objectFit: 'cover', marginRight: 15 }}
+                    />
+                  )}
+                  <div style={{ lineHeight: 1.6 }}>
+                    <div><strong>Title:</strong> {r.title}</div>
+                    <div><strong>Price:</strong> ${r.price.toLocaleString()}</div>
+                    <div><strong>Kilometers:</strong> {r.kms.toLocaleString()} km</div>
+                    <div><strong>Date Listed:</strong> {new Date(r.timestamp * 1000).toLocaleString()}</div>
+                    <div><strong>Location:</strong> {r.location}</div>
+                  </div>
+                </li>
+              ))}
             </ul>
-            <div style={{ marginTop: 20 }}>
-              <label>Chart Mode:</label>
-              <select value={chartMode} onChange={e => setChartMode(e.target.value)} style={{ marginLeft: 10 }}>
-                <option value="kms">Price vs. KM</option>
-                <option value="year">Price vs. Year</option>
-              </select>
-            </div>
-
-            <DynamicPriceChart data={results} mode={chartMode} />
           </>
         )}
       </div>
     </div>
-  );
-}
 
-export default App;
+    {/* Sticky chart column */}
+    <div style={{
+      width: '400px',
+      position: 'sticky',
+      top: 0,
+      height: '100vh',
+      overflowY: 'auto',
+      backgroundColor: '#141414',
+      padding: '20px',
+      borderLeft: '1px solid #333'
+    }}>
+      {results.length > 0 && (
+        <>
+          <div>
+            <label>Chart Mode:</label>
+            <select value={chartMode} onChange={e => setChartMode(e.target.value)} style={{ marginLeft: 10 }}>
+              <option value="kms">Price vs. KM</option>
+              <option value="year">Price vs. Year</option>
+            </select>
+          </div>
+          <DynamicPriceChart data={results} mode={chartMode} />
+        </>
+      )}
+    </div>
+  </div>
+)}
