@@ -11,7 +11,8 @@ function App() {
 
   const search = async () => {
     try {
-      const res = await axios.get(`http://localhost:3001/api/search?q=${query}`);
+      const res = await axios.get(`https://keekos-analyzer.onrender.com/api/search?q=${query}`);
+s
       setResults(res.data);
     } catch (err) {
       console.error('Search error:', err.message);
