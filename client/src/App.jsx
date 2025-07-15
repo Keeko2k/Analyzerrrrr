@@ -7,23 +7,31 @@ import DynamicPriceChart from './components/DynamicPriceChart';
 function App() {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
-  const [chartMode, setChartMode] = useState('kms'); // default mode
+  const [chartMode, setChartMode] = useState('kms');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const search = async () => {
-     console.log('Search triggered:', query);
+    console.log('Search triggered:', query);
+    setLoading(true);
+    setError('');
+    setResults([]);
+
     try {
       const res = await axios.get(`https://keekos-analyzer.onrender.com/api/search?q=${query}`);
-
-
       setResults(res.data);
+      if (res.data.length === 0) setError('No results found.');
     } catch (err) {
       console.error('Search error:', err.message);
+      setError('Failed to load results. Please try again later.');
     }
+
+    setLoading(false);
   };
 
   return (
     <div style={{ padding: 20, fontFamily: 'Arial' }}>
-      <h1>📊 Car Price Analyzer</h1>
+      <h1>📊 KEEKOS ANALYZER</h1>
       <input
         type="text"
         value={query}
@@ -34,6 +42,9 @@ function App() {
       <button onClick={search} style={{ padding: '8px 16px', fontSize: '16px' }}>Search</button>
 
       <div style={{ marginTop: '30px' }}>
+        {loading && <p>🔄 Searching...</p>}
+        {error && <p style={{ color: 'red' }}>{error}</p>}
+
         {results.length > 0 && (
           <>
             <h2>{results.length} results found</h2>
