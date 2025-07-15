@@ -6,7 +6,12 @@ const path = require('path');
 const app = express();
 const db = new sqlite3.Database(path.join(__dirname, '../listings.db'));
 
-app.use(cors());
+const cors = require('cors');
+
+app.use(cors({
+  origin: 'https://analyzerrrrr-frontend.onrender.com'
+}));
+
 app.use(express.json());
 
 app.get('/api/search', (req, res) => {

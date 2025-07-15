@@ -10,8 +10,10 @@ function App() {
   const [chartMode, setChartMode] = useState('kms'); // default mode
 
   const search = async () => {
+     console.log('Search triggered:', query);
     try {
       const res = await axios.get(`https://keekos-analyzer.onrender.com/api/search?q=${query}`);
+
 s
       setResults(res.data);
     } catch (err) {
