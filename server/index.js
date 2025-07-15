@@ -12,7 +12,14 @@ app.use(cors({
 
 app.use(express.json());
 
-app.get('/api/search', (req, res) => {
+app.get('/api/search', async (req, res) => {
+  console.log(`🔍 Search triggered: ${req.query.q}`);
+  
+
+
+ 
+
+
   const q = req.query.q || '';
   const query = `%${q.toLowerCase()}%`;
 
