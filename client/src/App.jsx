@@ -4,9 +4,6 @@ import PriceVsKmChart from './components/PriceVsKmChart';
 import AveragePriceByYearChart from './components/AveragePriceByYearChart';
 import DynamicPriceChart from './components/DynamicPriceChart';
 import { motion } from 'framer-motion';
-export default App;
-
-
 
 function App() {
   const [query, setQuery] = useState('');
@@ -34,35 +31,66 @@ function App() {
   };
 
   return (
-  <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: '#1e1e1e', color: '#fff' }}>
-    
-    {/* Main content column */}
-    <div style={{ flex: 1, padding: 20, maxWidth: '900px', margin: '0 auto' }}>
-      <div style={{ textAlign: 'center' }}>
-        <h1>📊 KEEKOS ANALYZER</h1>
-        <input
-          type="text"
-          value={query}
-          onChange={e => setQuery(e.target.value)}
-          placeholder="e.g. honda civic"
-          style={{ padding: '8px', fontSize: '16px', width: '300px', marginRight: '10px' }}
-        />
-        <button onClick={search} style={{ padding: '8px 16px', fontSize: '16px' }}>Search</button>
-      </div>
+    <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: '#1e1e1e', color: '#fff' }}>
+      {/* Main content column */}
+      <div style={{ flex: 1, padding: 20, maxWidth: '900px', margin: '0 auto' }}>
+        <div style={{ textAlign: 'center', marginBottom: 20 }}>
+          <h1>📊 KEEKOS ANALYZER</h1>
+          <input
+            type="text"
+            value={query}
+            onChange={e => setQuery(e.target.value)}
+            placeholder="e.g. honda civic"
+            style={{
+              padding: '8px',
+              fontSize: '16px',
+              width: '300px',
+              marginRight: '10px',
+              borderRadius: 4,
+              border: 'none',
+              outline: 'none'
+            }}
+          />
+          <button
+            onClick={search}
+            style={{
+              padding: '8px 16px',
+              fontSize: '16px',
+              borderRadius: 4,
+              border: '1px solid #fff',
+              background: 'transparent',
+              color: '#fff',
+              cursor: 'pointer'
+            }}
+          >
+            Search
+          </button>
+        </div>
 
-      {/* Listing Results */}
-      <div style={{ marginTop: '30px' }}>
+        {/* Loading / Error */}
+        {loading && <div style={{ textAlign: 'center' }}>🔄 Loading...</div>}
+        {error && <div style={{ color: 'red', textAlign: 'center' }}>{error}</div>}
+
+        {/* Listing Results */}
         {results.length > 0 && (
-          <>
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            style={{ marginTop: '30px' }}
+          >
             <h2>{results.length} results found</h2>
             <ul style={{ listStyle: 'none', padding: 0 }}>
               {results.map((r, i) => (
-                <li
+                <motion.li
                   key={i}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.03 }}
                   style={{
                     display: 'flex',
                     marginBottom: '20px',
-                    borderBottom: '1px solid #ccc',
+                    borderBottom: '1px solid #444',
                     paddingBottom: '10px'
                   }}
                 >
@@ -70,7 +98,13 @@ function App() {
                     <img
                       src={r.thumb}
                       alt="thumb"
-                      style={{ width: 120, height: 90, objectFit: 'cover', marginRight: 15 }}
+                      style={{
+                        width: 120,
+                        height: 90,
+                        objectFit: 'cover',
+                        marginRight: 15,
+                        borderRadius: 6
+                      }}
                     />
                   )}
                   <div style={{ lineHeight: 1.6 }}>
@@ -80,37 +114,50 @@ function App() {
                     <div><strong>Date Listed:</strong> {new Date(r.timestamp * 1000).toLocaleString()}</div>
                     <div><strong>Location:</strong> {r.location}</div>
                   </div>
-                </li>
+                </motion.li>
               ))}
             </ul>
-          </>
+          </motion.div>
         )}
       </div>
-    </div>
 
-    {/* Sticky chart column */}
-    <div style={{
-      width: '400px',
-      position: 'sticky',
-      top: 0,
-      height: '100vh',
-      overflowY: 'auto',
-      backgroundColor: '#141414',
-      padding: '20px',
-      borderLeft: '1px solid #333'
-    }}>
-      {results.length > 0 && (
-        <>
-          <div>
-            <label>Chart Mode:</label>
-            <select value={chartMode} onChange={e => setChartMode(e.target.value)} style={{ marginLeft: 10 }}>
-              <option value="kms">Price vs. KM</option>
-              <option value="year">Price vs. Year</option>
-            </select>
-          </div>
-          <DynamicPriceChart data={results} mode={chartMode} />
-        </>
-      )}
+      {/* Sticky chart column */}
+      <motion.div
+        initial={{ opacity: 0, x: 50 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.6, delay: 0.2 }}
+        style={{
+          width: '400px',
+          position: 'sticky',
+          top: 0,
+          height: '100vh',
+          overflowY: 'auto',
+          backgroundColor: '#141414',
+          padding: '20px',
+          borderLeft: '1px solid #333',
+        }}
+      >
+        {results.length > 0 && (
+          <>
+            <div>
+              <label>Chart Mode:</label>
+              <select
+                value={chartMode}
+                onChange={e => setChartMode(e.target.value)}
+                style={{ marginLeft: 10, padding: '4px', borderRadius: 4 }}
+              >
+                <option value="kms">Price vs. KM</option>
+                <option value="year">Price vs. Year</option>
+              </select>
+            </div>
+            <div style={{ marginTop: 20 }}>
+              <DynamicPriceChart data={results} mode={chartMode} />
+            </div>
+          </>
+        )}
+      </motion.div>
     </div>
-  </div>
-)}
+  );
+}
+
+export default App;
