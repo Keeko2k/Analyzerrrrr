@@ -5,9 +5,8 @@ const path = require('path');
 
 
 const app = express();
-const DB_FILE = process.env.RENDER
-  ? '/tmp/listings.db'
-  : path.resolve(__dirname, 'server/listings.db');
+const DB_FILE = path.resolve(__dirname, 'listings.db');
+
 console.log("📦 Using DB path:", DB_FILE);
 
 
