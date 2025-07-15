@@ -5,7 +5,10 @@ const path = require('path');
 
 
 const app = express();
-const DB_FILE = path.join(__dirname, 'fb-marketplace-dashboard', 'server', 'listings.db');
+const DB_FILE = process.env.DB_PATH || path.resolve(__dirname, 'server/listings.db');
+console.log("📦 Using DB path:", DB_FILE);
+
+
 console.log("Using DB path:", DB_FILE);
 
 const db = new sqlite3.Database(DB_FILE);
