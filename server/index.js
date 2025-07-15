@@ -13,11 +13,29 @@ app.use(cors({
 app.use(express.json());
 
 app.get('/api/search', async (req, res) => {
-  console.log(`🔍 Search triggered: ${req.query.q}`);
-  
+  try {
+    console.log(`🔍 API search received: ${req.query.q}`);
 
+    const db = new sqlite3.Database('./listings.db', sqlite3.OPEN_READONLY, (err) => {
+      if (err) {
+        console.error("❌ DB error:", err.message);
+        return res.status(500).json({ error: "DB connection failed" });
+      }
+    });
 
- 
+    const sql = `SELECT * FROM seen WHERE title LIKE ? OR url LIKE ? ORDER BY timestamp DESC`;
+
+    db.all(sql, [`%${req.query.q}%`, `%${req.query.q}%`], (err, rows) => {
+      if (err) {
+        console.error("❌ SQL error:", err.message);
+        return res.status(500).json({ error: "SQL error" });
+      }
+      res.json(rows);
+    });
+  } catch (err) {
+    console.error("❌ Unexpected error:", err.message);
+    res.status(500).json({ error: "Server error" });
+  }
 
 
   const q = req.query.q || '';
