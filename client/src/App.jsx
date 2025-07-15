@@ -4,6 +4,10 @@ import PriceVsKmChart from './components/PriceVsKmChart';
 import AveragePriceByYearChart from './components/AveragePriceByYearChart';
 import DynamicPriceChart from './components/DynamicPriceChart';
 import { motion } from 'framer-motion';
+export default App;
+
+
+
 function App() {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
