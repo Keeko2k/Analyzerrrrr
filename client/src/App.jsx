@@ -1,7 +1,5 @@
 import { useState } from 'react';
 import axios from 'axios';
-import PriceVsKmChart from './components/PriceVsKmChart';
-import AveragePriceByYearChart from './components/AveragePriceByYearChart';
 import DynamicPriceChart from './components/DynamicPriceChart';
 import { motion } from 'framer-motion';
 
@@ -13,7 +11,6 @@ function App() {
   const [error, setError] = useState('');
 
   const search = async () => {
-    console.log('Search triggered:', query);
     setLoading(true);
     setError('');
     setResults([]);
@@ -31,53 +28,53 @@ function App() {
   };
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: '#1e1e1e', color: '#fff' }}>
-      {/* Main content column */}
-      <div style={{ flex: 1, padding: 20, maxWidth: '900px', margin: '0 auto' }}>
-        <div style={{ textAlign: 'center', marginBottom: 20 }}>
-          <h1>📊 KEEKOS ANALYZER</h1>
-          <input
-            type="text"
-            value={query}
-            onChange={e => setQuery(e.target.value)}
-            placeholder="e.g. honda civic"
-            style={{
-              padding: '8px',
-              fontSize: '16px',
-              width: '300px',
-              marginRight: '10px',
-              borderRadius: 4,
-              border: 'none',
-              outline: 'none'
-            }}
-          />
-          <button
-            onClick={search}
-            style={{
-              padding: '8px 16px',
-              fontSize: '16px',
-              borderRadius: 4,
-              border: '1px solid #fff',
-              background: 'transparent',
-              color: '#fff',
-              cursor: 'pointer'
-            }}
-          >
-            Search
-          </button>
+    <div style={{ display: 'flex', backgroundColor: '#1e1e1e', color: '#fff', minHeight: '100vh' }}>
+      {/* Left column: main content */}
+      <div style={{ flex: 1, padding: '20px 40px', maxWidth: '800px', margin: '0 auto' }}>
+        {/* Header */}
+        <div style={{ textAlign: 'center', marginBottom: 30 }}>
+          <h1 style={{ fontSize: '36px' }}>📊 KEEKOS ANALYZER</h1>
+          <div style={{ marginTop: 10 }}>
+            <input
+              type="text"
+              value={query}
+              onChange={e => setQuery(e.target.value)}
+              placeholder="e.g. honda civic"
+              style={{
+                padding: '10px',
+                fontSize: '16px',
+                width: '300px',
+                marginRight: '10px',
+                borderRadius: 4,
+                border: 'none'
+              }}
+            />
+            <button
+              onClick={search}
+              style={{
+                padding: '10px 20px',
+                fontSize: '16px',
+                borderRadius: 4,
+                border: '1px solid #fff',
+                background: 'transparent',
+                color: '#fff',
+                cursor: 'pointer'
+              }}
+            >
+              Search
+            </button>
+          </div>
         </div>
 
-        {/* Loading / Error */}
+        {/* Results */}
         {loading && <div style={{ textAlign: 'center' }}>🔄 Loading...</div>}
         {error && <div style={{ color: 'red', textAlign: 'center' }}>{error}</div>}
 
-        {/* Listing Results */}
         {results.length > 0 && (
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            style={{ marginTop: '30px' }}
           >
             <h2>{results.length} results found</h2>
             <ul style={{ listStyle: 'none', padding: 0 }}>
@@ -86,7 +83,7 @@ function App() {
                   key={i}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.03 }}
+                  transition={{ delay: i * 0.02 }}
                   style={{
                     display: 'flex',
                     marginBottom: '20px',
@@ -121,11 +118,8 @@ function App() {
         )}
       </div>
 
-      {/* Sticky chart column */}
-      <motion.div
-        initial={{ opacity: 0, x: 50 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.6, delay: 0.2 }}
+      {/* Right column: sticky chart */}
+      <div
         style={{
           width: '400px',
           position: 'sticky',
@@ -135,11 +129,12 @@ function App() {
           backgroundColor: '#141414',
           padding: '20px',
           borderLeft: '1px solid #333',
+          flexShrink: 0
         }}
       >
         {results.length > 0 && (
           <>
-            <div>
+            <div style={{ marginBottom: 10 }}>
               <label>Chart Mode:</label>
               <select
                 value={chartMode}
@@ -150,12 +145,10 @@ function App() {
                 <option value="year">Price vs. Year</option>
               </select>
             </div>
-            <div style={{ marginTop: 20 }}>
-              <DynamicPriceChart data={results} mode={chartMode} />
-            </div>
+            <DynamicPriceChart data={results} mode={chartMode} />
           </>
         )}
-      </motion.div>
+      </div>
     </div>
   );
 }
